@@ -54,7 +54,7 @@ RUN set -ex \
     && useradd -ms /bin/bash -d ${AIRFLOW_USER_HOME} airflow \
     && pip install -U pip setuptools wheel \
     && pip install pytz \
-    && pip install pyOpenSSL \
+    && pip install pyOpenSSL==19.0.0 \
     && pip install ndg-httpsclient \
     && pip install pyasn1 \
     && pip install apache-airflow[crypto,celery,postgres,hive,jdbc,mysql,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}]==${AIRFLOW_VERSION} \
@@ -71,6 +71,14 @@ RUN set -ex \
     /usr/share/doc \
     /usr/share/doc-base
 
+# install common python dependencies
+
+RUN pip install numpy==1.16.3
+RUN pip install pandas==0.24.2
+RUN pip install gspread==3.1.0
+RUN pip install oauth2client==1.5.2
+
+
 COPY script/entrypoint.sh /entrypoint.sh
 COPY config/airflow.cfg ${AIRFLOW_USER_HOME}/airflow.cfg
 
@@ -78,7 +86,8 @@ RUN chown -R airflow: ${AIRFLOW_USER_HOME}
 
 EXPOSE 8080 5555 8793
 
-USER airflow
+# USER airflow
+
 WORKDIR ${AIRFLOW_USER_HOME}
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["webserver"] # set default arg for entrypoint

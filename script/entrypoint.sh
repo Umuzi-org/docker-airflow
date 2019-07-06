@@ -36,6 +36,11 @@ if [ -e "/requirements.txt" ]; then
     $(which pip) install --user -r /requirements.txt
 fi
 
+if [ -e "/usr/local/airflow/dags/requirements.txt" ]; then
+    $(which pip) install --user -r /usr/local/airflow/dags/requirements.txt
+fi
+
+
 if [ -n "$REDIS_PASSWORD" ]; then
     REDIS_PREFIX=:${REDIS_PASSWORD}@
 else
